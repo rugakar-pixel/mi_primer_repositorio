@@ -2,11 +2,125 @@ import ExcelJS from 'exceljs';
 import { saveAs } from 'file-saver';
 import { Actividad, ConfiguracionLaboral } from '../types/budget';
 import { calcularCronogramaCompleto, calcularSalarios, generarPlanillaNomina } from './calculator';
+import type { BudgetOrigin, ConsolidationResponse } from '../../consolidado/types';
+
+const consolidatedSheets: Array<{ name: string; origin: BudgetOrigin }> = [
+  { name: 'Mano de Obra', origin: 'MANO_OBRA' },
+  { name: 'Materiales', origin: 'MATERIAL' },
+  { name: 'Equipos', origin: 'EQUIPO' },
+  { name: 'Subcontratos', origin: 'SUBCONTRATO' },
+  { name: 'Otros', origin: 'OTRO' },
+];
+
+export function addConsolidationSheets(
+  workbook: ExcelJS.Workbook,
+  consolidated: ConsolidationResponse,
+  projectName: string,
+): void {
+  const summary = workbook.addWorksheet('Resumen Ejecutivo');
+  summary.addRow(['RESUMEN EJECUTIVO DEL PRESUPUESTO']);
+  summary.addRow([`PROYECTO: ${projectName}`]);
+  summary.addRow([`MONEDA: NIO | TASA REFERENCIAL: ${consolidated.resumen.tasaCambio} NIO/USD`]);
+  summary.addRow([]);
+  summary.addRow(['ORIGEN', 'COSTO TOTAL']);
+  summary.addRows([
+    ['Mano de Obra', consolidated.resumen.manoObra],
+    ['Materiales', consolidated.resumen.materiales],
+    ['Equipos', consolidated.resumen.equipos],
+    ['Subcontratos', consolidated.resumen.subcontratos],
+    ['Otros', consolidated.resumen.otros],
+    ['TOTAL GENERAL', consolidated.resumen.totalGeneral],
+  ]);
+  summary.getRow(1).font = { bold: true, size: 14, color: { argb: 'FF1F497D' } };
+  summary.getRow(5).font = { bold: true, color: { argb: 'FFFFFFFF' } };
+  summary.getRow(5).fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: 'FF1F497D' } };
+  summary.getColumn(1).width = 38;
+  summary.getColumn(2).width = 22;
+  summary.getColumn(2).numFmt = '"C$" #,##0.00';
+  summary.getRow(11).font = { bold: true };
+
+  for (const { name, origin } of consolidatedSheets) {
+    const sheet = workbook.addWorksheet(name);
+    sheet.addRow(['ITEM', 'ORIGEN', 'DESCRIPCIÓN', 'U/M', 'CANTIDAD', 'COSTO UNITARIO', 'COSTO TOTAL', 'TRAZABILIDAD']);
+    const items = consolidated.items.filter((item) => item.origen === origin);
+    items.forEach((item, index) => {
+      sheet.addRow([
+        index + 1,
+        item.origen,
+        item.descripcion,
+        item.unidadMedida,
+        item.cantidad,
+        item.costoUnitario,
+        item.costoTotal,
+        item.referencias.join(' | '),
+      ]);
+    });
+    const total = origin === 'MANO_OBRA'
+      ? consolidated.resumen.manoObra
+      : origin === 'MATERIAL'
+        ? consolidated.resumen.materiales
+        : origin === 'EQUIPO'
+          ? consolidated.resumen.equipos
+          : origin === 'SUBCONTRATO'
+            ? consolidated.resumen.subcontratos
+            : consolidated.resumen.otros;
+    sheet.addRow(['', '', 'TOTAL', '', '', '', total]);
+    sheet.getRow(1).font = { bold: true, color: { argb: 'FFFFFFFF' } };
+    sheet.getRow(1).fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: 'FF1F497D' } };
+    sheet.getColumn(1).width = 9;
+    sheet.getColumn(2).width = 18;
+    sheet.getColumn(3).width = 58;
+    sheet.getColumn(4).width = 12;
+    sheet.getColumn(5).width = 15;
+    sheet.getColumn(6).width = 20;
+    sheet.getColumn(7).width = 20;
+    sheet.getColumn(8).width = 60;
+    sheet.getColumn(5).numFmt = '#,##0.0000';
+    sheet.getColumn(6).numFmt = '"C$" #,##0.00';
+    sheet.getColumn(7).numFmt = '"C$" #,##0.00';
+    sheet.lastRow?.eachCell((cell) => {
+      cell.font = { bold: true };
+    });
+  }
+
+  const general = workbook.addWorksheet('Consolidado General');
+  general.addRow(['ITEM', 'ORIGEN', 'DESCRIPCIÓN', 'U/M', 'CANTIDAD', 'COSTO UNITARIO', 'COSTO TOTAL', 'TRAZABILIDAD']);
+  consolidated.items.forEach((item, index) => {
+    general.addRow([
+      index + 1,
+      item.origen,
+      item.descripcion,
+      item.unidadMedida,
+      item.cantidad,
+      item.costoUnitario,
+      item.costoTotal,
+      item.referencias.join(' | '),
+    ]);
+  });
+  general.addRow(['', '', 'TOTAL GENERAL', '', '', '', consolidated.resumen.totalGeneral]);
+  general.getRow(1).font = { bold: true, color: { argb: 'FFFFFFFF' } };
+  general.getRow(1).fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: 'FF1F497D' } };
+  general.getColumn(1).width = 9;
+  general.getColumn(2).width = 18;
+  general.getColumn(3).width = 58;
+  general.getColumn(4).width = 12;
+  general.getColumn(5).width = 15;
+  general.getColumn(6).width = 20;
+  general.getColumn(7).width = 20;
+  general.getColumn(8).width = 60;
+  general.getColumn(5).numFmt = '#,##0.0000';
+  general.getColumn(6).numFmt = '"C$" #,##0.00';
+  general.getColumn(7).numFmt = '"C$" #,##0.00';
+  general.lastRow?.eachCell((cell) => {
+    cell.font = { bold: true };
+  });
+}
 
 export async function exportarExcelPresupuesto(
   actividades: Actividad[],
   config: ConfiguracionLaboral,
-  nombreProyecto: string = 'EBAR SUR 2'
+  nombreProyecto: string = 'EBAR SUR 2',
+  consolidado?: ConsolidationResponse,
 ) {
   const cronograma = calcularCronogramaCompleto(actividades, config);
   const salarios = calcularSalarios(config);
@@ -15,6 +129,7 @@ export async function exportarExcelPresupuesto(
   const workbook = new ExcelJS.Workbook();
   workbook.creator = 'Ingeniería y Costos de Construcción - Nicaragua 2026';
   workbook.created = new Date();
+  if (consolidado) addConsolidationSheets(workbook, consolidado, nombreProyecto);
 
   // Corporate Colors
   const COLOR_PRIMARIO = 'FF1F497D';   // Navy

@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useMemo, useState } from 'react';
 import { Actividad, ConfiguracionLaboral } from './types/budget';
 import {
   CONFIG_NICARAGUA_2026_DEFAULT,
@@ -7,12 +7,13 @@ import {
 } from './utils/calculator';
 
 import { BudgetSummaryCards } from './components/BudgetSummaryCards';
-import { PresupuestoMOTable } from './components/PresupuestoMOTable';
 import { MemoriaFlujoTable } from './components/MemoriaFlujoTable';
 import { CronogramaGraficoTable } from './components/CronogramaGraficoTable';
 import { PlanillaNominaTable } from './components/PlanillaNominaTable';
 import { ActivityModal } from './components/ActivityModal';
 import { ConfigModal } from './components/ConfigModal';
+import { EstructuraCostosView } from '../apu/EstructuraCostosView';
+import { ConsolidatedProjectView } from '../consolidado/ConsolidatedProjectView';
 
 import {
   FileSpreadsheet,
@@ -28,10 +29,14 @@ import {
 } from 'lucide-react';
 
 interface PresupuestoMoModuleProps {
-  mode?: 'module' | 'consolidated';
+  mode?: 'module' | 'consolidated' | 'apu';
+  onConsolidatedTotalChange?: (total: number) => void;
 }
 
-export function PresupuestoMoModule({ mode = 'module' }: PresupuestoMoModuleProps) {
+export function PresupuestoMoModule({
+  mode = 'module',
+  onConsolidatedTotalChange = () => undefined,
+}: PresupuestoMoModuleProps) {
   const [config, setConfig] = useState<ConfiguracionLaboral>(CONFIG_NICARAGUA_2026_DEFAULT);
   const [actividades, setActividades] = useState<Actividad[]>(ITEMS_EBAR_SUR_2_DEFAULT);
   const [nombreProyecto, setNombreProyecto] = useState('EBAR SUR 2');
@@ -43,7 +48,10 @@ export function PresupuestoMoModule({ mode = 'module' }: PresupuestoMoModuleProp
   const [isExporting, setIsExporting] = useState(false);
 
   // Recalcular dinámicamente todo el modelo
-  const cronograma = calcularCronogramaCompleto(actividades, config);
+  const cronograma = useMemo(
+    () => calcularCronogramaCompleto(actividades, config),
+    [actividades, config],
+  );
 
   // Manipulación Dinámica de Actividades (Requisito 2)
   const handleSaveActivity = (data: Partial<Actividad>) => {
@@ -238,6 +246,8 @@ export function PresupuestoMoModule({ mode = 'module' }: PresupuestoMoModuleProp
 
       {/* Main Container */}
       <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 flex-1 w-full space-y-6">
+        {mode === 'apu' && <EstructuraCostosView actividades={actividades} cronograma={cronograma} />}
+        {mode !== 'apu' && <>
         {mode === 'consolidated' && (
           <div className="flex flex-wrap items-center justify-end gap-2 rounded-xl border border-slate-800 bg-slate-900/60 p-3">
             {actionButtons}
@@ -279,16 +289,18 @@ export function PresupuestoMoModule({ mode = 'module' }: PresupuestoMoModuleProp
         {mode === 'module' && <BudgetSummaryCards cronograma={cronograma} />}
 
         {/* Tab Views */}
-        {mode === 'consolidated' && (
-          <PresupuestoMOTable
+        <div className={mode === 'consolidated' ? 'block' : 'hidden'}>
+          <ConsolidatedProjectView
+            actividades={actividades}
+            config={config}
             cronograma={cronograma}
             onEditActivity={handleOpenEdit}
             onDeleteActivity={handleDeleteActivity}
             onAddActivity={handleOpenNew}
             nombreProyecto={nombreProyecto}
-            presentation={mode === 'consolidated' ? 'consolidated' : 'module'}
+            onTotalChange={onConsolidatedTotalChange}
           />
-        )}
+        </div>
 
         {mode === 'module' && activeTab === 'memoria' && (
           <MemoriaFlujoTable
@@ -310,6 +322,7 @@ export function PresupuestoMoModule({ mode = 'module' }: PresupuestoMoModuleProp
             nombreProyecto={nombreProyecto}
           />
         )}
+        </>}
 
       </main>
 

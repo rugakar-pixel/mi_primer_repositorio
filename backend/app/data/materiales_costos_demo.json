@@ -1,0 +1,584 @@
+{
+  "meta": {
+    "nombre": "Cárcamo de Bombeo, Andenes y Obras Civiles Perimetrales",
+    "moneda": "USD",
+    "tasaCambioNIO": 36.8,
+    "aiu": {
+      "administracionPct": 10,
+      "imprevistosPct": 5,
+      "utilidadPct": 5,
+      "ivaUtilidadPct": 15
+    }
+  },
+  "actividades": [
+    {
+      "id": "ACT-001",
+      "item": 1,
+      "codigo": "MET-01",
+      "descripcion": "Construcción de escalera metálica de acceso a cárcamo",
+      "unidad": "ML",
+      "cantidad": 2,
+      "medidas": {
+        "longitud": 2,
+        "ancho": 0.6,
+        "piezas": 1
+      },
+      "apu": {
+        "materiales": [
+          {
+            "nombre": "Tubo estructural rectangular 100x50x2mm",
+            "unidad": "ML",
+            "cantidad": 2.2,
+            "precioUnitario": 24.5
+          },
+          {
+            "nombre": "Peldaño lámina alfajor antideslizante 1/8\"",
+            "unidad": "UND",
+            "cantidad": 6,
+            "precioUnitario": 7.2
+          },
+          {
+            "nombre": "Pintura epóxica anticorrosiva de 2 componentes",
+            "unidad": "GL",
+            "cantidad": 0.25,
+            "precioUnitario": 28
+          },
+          {
+            "nombre": "Pernos de anclaje de expansión 1/2\" x 4\"",
+            "unidad": "UND",
+            "cantidad": 4,
+            "precioUnitario": 3.5
+          }
+        ],
+        "equipos": [
+          {
+            "nombre": "Equipo de soldadura inversor 200A y tronzadora",
+            "unidad": "HORA",
+            "cantidad": 2.5,
+            "precioUnitario": 3.2
+          }
+        ],
+        "herramientas": []
+      },
+      "otrosCostos": []
+    },
+    {
+      "id": "ACT-002",
+      "item": 2,
+      "codigo": "MET-02",
+      "descripcion": "Construcción de barandal metálico sobre muro de cárcamo",
+      "unidad": "ML",
+      "cantidad": 9.15,
+      "medidas": {
+        "longitud": 9.15,
+        "alto": 1.1
+      },
+      "apu": {
+        "materiales": [
+          {
+            "nombre": "Tubo de acero negro sch 40 de 1-1/2\"",
+            "unidad": "ML",
+            "cantidad": 2.8,
+            "precioUnitario": 12.8
+          },
+          {
+            "nombre": "Platina de anclaje de 4\"x4\" e=1/4\"",
+            "unidad": "UND",
+            "cantidad": 0.6,
+            "precioUnitario": 6.5
+          },
+          {
+            "nombre": "Pintura anticorrosiva y esmalte sintético",
+            "unidad": "GL",
+            "cantidad": 0.15,
+            "precioUnitario": 26
+          },
+          {
+            "nombre": "Pernos de anclaje hilti 3/8\" x 3-1/2\"",
+            "unidad": "UND",
+            "cantidad": 2.4,
+            "precioUnitario": 2.8
+          }
+        ],
+        "equipos": [
+          {
+            "nombre": "Soldador de arco y pulidora",
+            "unidad": "HORA",
+            "cantidad": 1.8,
+            "precioUnitario": 3.5
+          }
+        ],
+        "herramientas": []
+      },
+      "otrosCostos": []
+    },
+    {
+      "id": "ACT-003",
+      "item": 3,
+      "codigo": "CON-01",
+      "descripcion": "Elaboración y colado de concreto estructural",
+      "unidad": "M³",
+      "cantidad": 1.35,
+      "medidas": {
+        "longitud": 3,
+        "ancho": 1.5,
+        "espesor": 0.3
+      },
+      "apu": {
+        "materiales": [
+          {
+            "nombre": "Cemento Gris Portland Tipo I (bultos 50kg)",
+            "unidad": "BLT",
+            "cantidad": 8.5,
+            "precioUnitario": 9.8
+          },
+          {
+            "nombre": "Arena de río lavada",
+            "unidad": "M³",
+            "cantidad": 0.55,
+            "precioUnitario": 28
+          },
+          {
+            "nombre": "Grava triturada 3/4\"",
+            "unidad": "M³",
+            "cantidad": 0.85,
+            "precioUnitario": 32
+          },
+          {
+            "nombre": "Agua para concreto",
+            "unidad": "M³",
+            "cantidad": 0.18,
+            "precioUnitario": 5
+          },
+          {
+            "nombre": "Aditivo impermeabilizante para cárcamo",
+            "unidad": "KG",
+            "cantidad": 2,
+            "precioUnitario": 4.5
+          }
+        ],
+        "equipos": [
+          {
+            "nombre": "Mezcladora de 1 bulto (trompo)",
+            "unidad": "HORA",
+            "cantidad": 1.5,
+            "precioUnitario": 5.5
+          },
+          {
+            "nombre": "Vibrador de concreto a gasolina",
+            "unidad": "HORA",
+            "cantidad": 1.5,
+            "precioUnitario": 4.8
+          }
+        ],
+        "herramientas": []
+      },
+      "otrosCostos": []
+    },
+    {
+      "id": "ACT-004",
+      "item": 4,
+      "codigo": "ACE-01",
+      "descripcion": "Alistar, cortar, armar y colocar acero de refuerzo",
+      "unidad": "KG",
+      "cantidad": 171.35,
+      "medidas": {
+        "piezas": 28,
+        "longitud": 4.5,
+        "diametro": 0.5,
+        "pesoPorMetro": 0.994
+      },
+      "apu": {
+        "materiales": [
+          {
+            "nombre": "Varilla corrugada de acero grado 60 (Fy=4200 kg/cm²)",
+            "unidad": "KG",
+            "cantidad": 1.05,
+            "precioUnitario": 1.25
+          },
+          {
+            "nombre": "Alambre negro de amarre cal. 18",
+            "unidad": "KG",
+            "cantidad": 0.04,
+            "precioUnitario": 2.1
+          },
+          {
+            "nombre": "Separadores plásticos de recubrimiento (panelas)",
+            "unidad": "UND",
+            "cantidad": 0.5,
+            "precioUnitario": 0.3
+          }
+        ],
+        "equipos": [],
+        "herramientas": [
+          {
+            "nombre": "Cizalla manual, banco de figurado y herramienta menor",
+            "unidad": "HORA",
+            "cantidad": 0.035,
+            "precioUnitario": 2
+          }
+        ]
+      },
+      "otrosCostos": []
+    },
+    {
+      "id": "ACT-005",
+      "item": 5,
+      "codigo": "URB-01",
+      "descripcion": "Construcción de andén de concreto simple",
+      "unidad": "M²",
+      "cantidad": 20.4,
+      "medidas": {
+        "longitud": 17,
+        "ancho": 1.2,
+        "espesor": 0.1
+      },
+      "apu": {
+        "materiales": [
+          {
+            "nombre": "Concreto simple premezclado 2500 PSI (espesor 10cm)",
+            "unidad": "M³",
+            "cantidad": 0.105,
+            "precioUnitario": 155
+          },
+          {
+            "nombre": "Formaleta de madera y desmoldante",
+            "unidad": "USO",
+            "cantidad": 0.25,
+            "precioUnitario": 4.5
+          },
+          {
+            "nombre": "Sellante elastomérico de poliuretano para juntas",
+            "unidad": "ML",
+            "cantidad": 0.8,
+            "precioUnitario": 3.2
+          },
+          {
+            "nombre": "Base granular estabilizada compactada (e=10cm)",
+            "unidad": "M³",
+            "cantidad": 0.11,
+            "precioUnitario": 24
+          }
+        ],
+        "equipos": [
+          {
+            "nombre": "Regla vibratoria, allanadora manual y cortadora de pavimento",
+            "unidad": "HORA",
+            "cantidad": 0.25,
+            "precioUnitario": 8
+          }
+        ],
+        "herramientas": []
+      },
+      "otrosCostos": []
+    },
+    {
+      "id": "ACT-006",
+      "item": 6,
+      "codigo": "CER-01",
+      "descripcion": "Cerco de malla ciclón con tubo de HG",
+      "unidad": "ML",
+      "cantidad": 12,
+      "medidas": {
+        "longitud": 12,
+        "alto": 2,
+        "piezas": 5
+      },
+      "apu": {
+        "materiales": [
+          {
+            "nombre": "Malla ciclónica galvanizada cal. 10 rombo 2\" h=2.0m",
+            "unidad": "ML",
+            "cantidad": 1.05,
+            "precioUnitario": 16.5
+          },
+          {
+            "nombre": "Poste de tubo HG galvanizado Ø 2\" x 2.40m",
+            "unidad": "UND",
+            "cantidad": 0.42,
+            "precioUnitario": 22
+          },
+          {
+            "nombre": "Tubo de línea superior HG galvanizado Ø 1-1/2\"",
+            "unidad": "ML",
+            "cantidad": 1.05,
+            "precioUnitario": 11.2
+          },
+          {
+            "nombre": "Alambre de púas galvanizado cal. 12.5 (3 hilos)",
+            "unidad": "ML",
+            "cantidad": 3.2,
+            "precioUnitario": 0.65
+          },
+          {
+            "nombre": "Concreto ciclópeo para dados de anclaje (0.3x0.3x0.5m)",
+            "unidad": "M³",
+            "cantidad": 0.04,
+            "precioUnitario": 120
+          }
+        ],
+        "equipos": [],
+        "herramientas": [
+          {
+            "nombre": "Ahoyadora manual, tensor mecánico y herramienta menor",
+            "unidad": "HORA",
+            "cantidad": 0.35,
+            "precioUnitario": 4.5
+          }
+        ]
+      },
+      "otrosCostos": []
+    },
+    {
+      "id": "ACT-007",
+      "item": 7,
+      "codigo": "CON-02",
+      "descripcion": "Concreto ciclópeo con piedra bolón",
+      "unidad": "M³",
+      "cantidad": 4.8,
+      "medidas": {
+        "longitud": 8,
+        "ancho": 1,
+        "espesor": 0.6
+      },
+      "apu": {
+        "materiales": [
+          {
+            "nombre": "Piedra bolón de río (tamaño 15 - 25 cm)",
+            "unidad": "M³",
+            "cantidad": 0.45,
+            "precioUnitario": 22
+          },
+          {
+            "nombre": "Cemento Portland Tipo I para mortero de pega",
+            "unidad": "BLT",
+            "cantidad": 5.2,
+            "precioUnitario": 9.8
+          },
+          {
+            "nombre": "Arena lavada para mezcla ciclópea",
+            "unidad": "M³",
+            "cantidad": 0.42,
+            "precioUnitario": 26
+          },
+          {
+            "nombre": "Grava seleccionada 3/4\"",
+            "unidad": "M³",
+            "cantidad": 0.52,
+            "precioUnitario": 30
+          }
+        ],
+        "equipos": [],
+        "herramientas": [
+          {
+            "nombre": "Mezcladora de concreto y herramientas menores",
+            "unidad": "HORA",
+            "cantidad": 1.2,
+            "precioUnitario": 5.5
+          }
+        ]
+      },
+      "otrosCostos": []
+    },
+    {
+      "id": "ACT-008",
+      "item": 8,
+      "codigo": "MET-03",
+      "descripcion": "Estructura metálica de caja",
+      "unidad": "M²",
+      "cantidad": 12.6,
+      "medidas": {
+        "longitud": 4.2,
+        "ancho": 3,
+        "piezas": 1
+      },
+      "apu": {
+        "materiales": [
+          {
+            "nombre": "Perfil estructural tubular ASTM A500 de 3\"x2\" e=2.5mm",
+            "unidad": "ML",
+            "cantidad": 2.4,
+            "precioUnitario": 19.5
+          },
+          {
+            "nombre": "Lámina galvanizada alfajor e=3/16\" para tapa",
+            "unidad": "M²",
+            "cantidad": 1.08,
+            "precioUnitario": 42
+          },
+          {
+            "nombre": "Bisagras industriales de uso pesado y pasador portacandado",
+            "unidad": "JGO",
+            "cantidad": 0.35,
+            "precioUnitario": 18
+          },
+          {
+            "nombre": "Pintura base zinc-cromato y esmalte poliuretano",
+            "unidad": "GL",
+            "cantidad": 0.18,
+            "precioUnitario": 32
+          }
+        ],
+        "equipos": [
+          {
+            "nombre": "Planta de soldar, esmeril angular y compresor",
+            "unidad": "HORA",
+            "cantidad": 1.5,
+            "precioUnitario": 4.2
+          }
+        ],
+        "herramientas": []
+      },
+      "otrosCostos": []
+    },
+    {
+      "id": "ACT-009",
+      "item": 9,
+      "codigo": "URB-02",
+      "descripcion": "contruir anden de concreto de 2500 psi de 0.6 m de ancho y 0.15 de espesor",
+      "unidad": "ML",
+      "cantidad": 12,
+      "medidas": {
+        "longitud": 12,
+        "ancho": 0.6,
+        "espesor": 0.15
+      },
+      "apu": {
+        "materiales": [
+          {
+            "nombre": "Concreto hidráulico 2500 PSI (volumen 0.09 m³/ml)",
+            "unidad": "M³",
+            "cantidad": 0.095,
+            "precioUnitario": 155
+          },
+          {
+            "nombre": "Formaleta lateral metálica o madera cepillada",
+            "unidad": "ML",
+            "cantidad": 2,
+            "precioUnitario": 1.8
+          },
+          {
+            "nombre": "Malla electrosoldada Ø 4mm 15x15 cm para retracción",
+            "unidad": "M²",
+            "cantidad": 0.65,
+            "precioUnitario": 3.4
+          },
+          {
+            "nombre": "Curador químico de parafina base agua",
+            "unidad": "GL",
+            "cantidad": 0.04,
+            "precioUnitario": 16
+          }
+        ],
+        "equipos": [
+          {
+            "nombre": "Vibrador de aguja y llanas de aluminio",
+            "unidad": "HORA",
+            "cantidad": 0.2,
+            "precioUnitario": 4
+          }
+        ],
+        "herramientas": []
+      },
+      "otrosCostos": []
+    }
+  ],
+  "tarifasEquipos": [
+    {
+      "id": "EQ-001",
+      "equipo": "Andamio Estándar (Por sección con tablón)",
+      "categoria": "Andamios",
+      "costoDiarioMinUSD": 0.4,
+      "costoDiarioMaxUSD": 2,
+      "costoDiarioPromedioUSD": 1.2,
+      "costoSemanalMinUSD": 2,
+      "costoSemanalMaxUSD": 8,
+      "costoSemanalPromedioUSD": 5,
+      "costoMensualMinUSD": 6,
+      "costoMensualMaxUSD": 20,
+      "costoMensualPromedioUSD": 13,
+      "unidadMedidaTarifa": "Día",
+      "observaciones": "Escalar según número de cuerpos/secciones requeridas."
+    },
+    {
+      "id": "EQ-002",
+      "equipo": "Generador Eléctrico (Portátil 110V/220V ~ 3KVA)",
+      "categoria": "Generación",
+      "costoDiarioMinUSD": 11,
+      "costoDiarioMaxUSD": 25,
+      "costoDiarioPromedioUSD": 18,
+      "costoSemanalMinUSD": 55,
+      "costoSemanalMaxUSD": 110,
+      "costoSemanalPromedioUSD": 82.5,
+      "costoMensualMinUSD": 180,
+      "costoMensualMaxUSD": 300,
+      "costoMensualPromedioUSD": 240,
+      "unidadMedidaTarifa": "Día",
+      "observaciones": "Consumo de combustible externo al presupuesto base."
+    },
+    {
+      "id": "EQ-003",
+      "equipo": "Taladro Rotamartillo (Industrial / SDS Max)",
+      "categoria": "Perforación y Demolición",
+      "costoDiarioMinUSD": 15,
+      "costoDiarioMaxUSD": 25,
+      "costoDiarioPromedioUSD": 20,
+      "costoSemanalMinUSD": 70,
+      "costoSemanalMaxUSD": 118,
+      "costoSemanalPromedioUSD": 94,
+      "costoMensualMinUSD": 200,
+      "costoMensualMaxUSD": 350,
+      "costoMensualPromedioUSD": 275,
+      "unidadMedidaTarifa": "Día",
+      "observaciones": "Suele requerir depósito de garantía por el valor de los cinceles."
+    },
+    {
+      "id": "EQ-004",
+      "equipo": "Pulidora / Esmeriladora (7 ½ pulgadas)",
+      "categoria": "Corte y Desbaste",
+      "costoDiarioMinUSD": 6,
+      "costoDiarioMaxUSD": 12,
+      "costoDiarioPromedioUSD": 9,
+      "costoSemanalMinUSD": 30,
+      "costoSemanalMaxUSD": 55,
+      "costoSemanalPromedioUSD": 42.5,
+      "costoMensualMinUSD": 90,
+      "costoMensualMaxUSD": 150,
+      "costoMensualPromedioUSD": 120,
+      "unidadMedidaTarifa": "Día",
+      "observaciones": "Consumibles (discos de corte/desbaste) van por cuenta del usuario."
+    },
+    {
+      "id": "EQ-005",
+      "equipo": "Mezcladora de 1 Saco (Trompo Concretero)",
+      "categoria": "Concreto",
+      "costoDiarioMinUSD": 10,
+      "costoDiarioMaxUSD": 25,
+      "costoDiarioPromedioUSD": 17.5,
+      "costoSemanalMinUSD": 50,
+      "costoSemanalMaxUSD": 120,
+      "costoSemanalPromedioUSD": 85,
+      "costoMensualMinUSD": 150,
+      "costoMensualMaxUSD": 380,
+      "costoMensualPromedioUSD": 265,
+      "unidadMedidaTarifa": "Día",
+      "observaciones": "Revisar si incluye motor eléctrico o a gasolina (combustible)."
+    },
+    {
+      "id": "EQ-006",
+      "equipo": "Soldadora / Welder (Inversora 110V/220V)",
+      "categoria": "Soldadura",
+      "costoDiarioMinUSD": 15,
+      "costoDiarioMaxUSD": 30,
+      "costoDiarioPromedioUSD": 22.5,
+      "costoSemanalMinUSD": 75,
+      "costoSemanalMaxUSD": 140,
+      "costoSemanalPromedioUSD": 107.5,
+      "costoMensualMinUSD": 220,
+      "costoMensualMaxUSD": 400,
+      "costoMensualPromedioUSD": 310,
+      "unidadMedidaTarifa": "Día",
+      "observaciones": "Equipos de alta demanda para tareas metalmecánicas pesadas."
+    }
+  ]
+}
