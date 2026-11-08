@@ -131,5 +131,6 @@ versión APU/uso, sin reescribir el historial.
 - Ejecutar pruebas de regresión backend y lint/build frontend.
 
 La implementación y los resultados se documentarán en
-`FASE2C_RESULTADO_FINAL.md`, `TEST_TECNICO_FASE2C.md` y
-`TEST_FUNCIONAL_FASE2C.md`.
+[FASE2C_RESULTADO_FINAL.md](../fases/FASE2C_RESULTADO_FINAL.md),
+[TEST_TECNICO_FASE2C.md](../reportes/TEST_TECNICO_FASE2C.md) y
+[TEST_FUNCIONAL_FASE2C.md](../reportes/TEST_FUNCIONAL_FASE2C.md).

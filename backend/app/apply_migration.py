@@ -53,6 +53,15 @@ MIGRATIONS = {
         "trigger": "trg_materiales_precios_inmutables",
         "trigger_table": "materiales_precios",
     },
+    "007": {
+        "file": "007_fase2d1_presupuesto_maestro.sql",
+        "tables": {
+            "presupuestos_maestros",
+            "presupuestos_maestros_capitulos",
+            "presupuestos_maestros_partidas",
+        },
+        "trigger": None,
+    },
 }
 
 
@@ -109,6 +118,12 @@ def main() -> None:
                 ).first()
                 if apu_applied is None:
                     raise RuntimeError("Aplique primero la migración 005 de la Fase 2B.")
+            if migration_id == "007":
+                materials_applied = connection.execute(
+                    text("SELECT 1 FROM schema_migrations WHERE version = '006'")
+                ).first()
+                if materials_applied is None:
+                    raise RuntimeError("Aplique primero la migración 006 de la Fase 2C.")
             already_applied = connection.execute(
                 text("SELECT 1 FROM schema_migrations WHERE version = :version"),
                 {"version": migration_id},

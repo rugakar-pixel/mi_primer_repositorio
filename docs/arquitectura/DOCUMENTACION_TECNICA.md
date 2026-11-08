@@ -17,7 +17,7 @@ El sistema es un prototipo web para elaborar y revisar presupuestos de obras de 
 - **Flujo principal:** acceso de demostración → tablero estático → abrir EBAR SUR 2 → editar actividades/parámetros de MO o consultar el consolidado → exportar Excel. El catálogo histórico se abre aparte desde el tablero.
 - **Límite funcional central:** no existe persistencia del proyecto ni del presupuesto de MO y materiales demo. Al recargar se reinicia el estado de MO. Las partidas de base de datos tienen un endpoint propio, pero no están conectadas a la pantalla APU.
 
-Evidencia principal: [README.md](./README.md), [frontend/src/app/App.tsx](./frontend/src/app/App.tsx), [frontend/src/modules/presupuesto-mo/PresupuestoMoModule.tsx](./frontend/src/modules/presupuesto-mo/PresupuestoMoModule.tsx), [backend/app/main.py](./backend/app/main.py).
+Evidencia principal: [README.md](../../README.md), [frontend/src/app/App.tsx](../../frontend/src/app/App.tsx), [frontend/src/modules/presupuesto-mo/PresupuestoMoModule.tsx](../../frontend/src/modules/presupuesto-mo/PresupuestoMoModule.tsx), [backend/app/main.py](../../backend/app/main.py).
 
 # 2. Arquitectura General
 
@@ -45,7 +45,7 @@ PostgreSQL (catálogo histórico y entidades de proyecto/APU)
 
 La flecha a PostgreSQL solo se aplica a operaciones que acceden a la base. Las rutas `/api/consolidado` y `/api/v1/materiales-costos/*` calculan sobre el cuerpo recibido o el JSON demo; no guardan el resultado.
 
-Evidencia: [backend/app/main.py](./backend/app/main.py), [backend/app/db/session.py](./backend/app/db/session.py), [backend/app/services/consolidado.py](./backend/app/services/consolidado.py), [backend/app/services/materiales_costos.py](./backend/app/services/materiales_costos.py).
+Evidencia: [backend/app/main.py](../../backend/app/main.py), [backend/app/db/session.py](../../backend/app/db/session.py), [backend/app/services/consolidado.py](../../backend/app/services/consolidado.py), [backend/app/services/materiales_costos.py](../../backend/app/services/materiales_costos.py).
 
 # 3. Estructura de Carpetas
 
@@ -477,7 +477,7 @@ Validación observada en esta revisión: `npm.cmd run lint` y `npm.cmd run build
 
 Un agente externo debería seguir este orden y no asumir capacidades por el nombre del módulo:
 
-1. Leer [README.md](./README.md), [frontend/BITACORA.md](./frontend/BITACORA.md), este documento, `frontend/package.json` y `backend/requirements.txt`.
+1. Leer [README.md](../../README.md), [BITACORA.md](../bitacora/BITACORA.md), este documento, `frontend/package.json` y `backend/requirements.txt`.
 2. Trazar pantallas desde `frontend/src/app/App.tsx`; ubicar el estado y las callbacks en `PresupuestoMoModule.tsx`; distinguir cálculos cliente de peticiones HTTP.
 3. Para cambios de API revisar router, schema, service, modelo y pruebas como una misma unidad. Confirmar el prefijo efectivo en `backend/app/main.py`.
 4. No confundir `Project` Pydantic demo con la entidad SQLAlchemy `Proyecto`, ni asumir que el payload del demo se persiste.

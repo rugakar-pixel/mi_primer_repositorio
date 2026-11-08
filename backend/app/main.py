@@ -21,6 +21,7 @@ from app.api.v1.partidas import router as partidas_router
 from app.api.v1.plataforma import router as plataforma_router
 from app.api.v1.wbs import router as wbs_router
 from app.api.v1.apu_maestro import router as apu_maestro_router
+from app.api.v1.presupuesto_maestro import router as presupuesto_maestro_router
 from app.models import database_models
 
 
@@ -59,6 +60,7 @@ app.include_router(materiales_router, prefix="/api/v1")
 app.include_router(plataforma_router, prefix="/api/v1")
 app.include_router(wbs_router, prefix="/api/v1")
 app.include_router(apu_maestro_router, prefix="/api/v1")
+app.include_router(presupuesto_maestro_router, prefix="/api/v1")
 
 
 @app.get("/")

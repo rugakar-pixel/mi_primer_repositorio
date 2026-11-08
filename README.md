@@ -11,6 +11,8 @@ funcionalidades disponibles. La denominación inicial del proyecto fue
 "Motor de Presupuesto MO y Flujo de Caja Nicaragua 2026"; ObraNexa fue un nombre
 de trabajo propuesto y posteriormente sustituido por la decisión oficial COS.
 
+Consulta el [índice documental de COS](docs/README.md) para navegar por arquitectura, fases, reportes, gestión, decisiones, anexos, roadmap y bitácora.
+
 ## Estructura principal
 
 - `frontend/src/main.tsx`: punto de arranque de la aplicación.
@@ -18,7 +20,7 @@ de trabajo propuesto y posteriormente sustituido por la decisión oficial COS.
 - `frontend/src/app/AccessScreen.tsx`: pantalla de acceso de demostración.
 - `frontend/src/modules/presupuesto-mo/`: Módulo 1, con sus pantallas, componentes, cálculos, tipos y exportación Excel.
 - `frontend/examples/`: libro Excel de referencia; no es necesario para iniciar la aplicación.
-- `frontend/BITACORA.md`: registro de decisiones, cambios y tareas pendientes.
+- [Bitácora](docs/bitacora/BITACORA.md): registro de decisiones, cambios y tareas pendientes.
 - `frontend/package.json` y `frontend/package-lock.json`: dependencias y comandos del frontend.
 - `backend/app/main.py`: punto de entrada inicial de FastAPI.
 - `backend/requirements.txt`: dependencias Python, pendiente de configuración.
@@ -183,6 +185,6 @@ la versión destino no modifica la versión de origen. En esta fase las partidas
 solo guardan código, descripción, unidad, cantidad y rendimiento. No se
 implementan materiales, equipos ni consolidado.
 
-Consulta [FASE2A_DISENO_WBS.md](./FASE2A_DISENO_WBS.md) para el modelo y las
-rutas API, y [FASE2A_RESULTADO_FINAL.md](./FASE2A_RESULTADO_FINAL.md) para la
+Consulta [FASE2A_DISENO_WBS.md](./docs/fases/FASE2A_DISENO_WBS.md) para el modelo y las
+rutas API, y [FASE2A_RESULTADO_FINAL.md](./docs/fases/FASE2A_RESULTADO_FINAL.md) para la
 validación realizada.

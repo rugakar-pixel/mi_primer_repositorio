@@ -8,7 +8,7 @@ PostgreSQL.
 
 ## Entregables y cambios de Fase 2C
 
-- `FASE2C_DISENO_MATERIALES.md`: arquitectura, modelo, flujos, impactos y
+- [FASE2C_DISENO_MATERIALES.md](../arquitectura/FASE2C_DISENO_MATERIALES.md): arquitectura, modelo, flujos, impactos y
   criterios previos a implementación.
 - `backend/migrations/006_fase2c_cotizaciones_materiales.sql`: agrega origen y
   referencia de cotización sin alterar ni borrar historial.
@@ -32,7 +32,7 @@ PostgreSQL.
   crear/consultar el catálogo y cotizaciones, seleccionar precio e integrar
   APU en una partida versionada; el uso presenta los datos del snapshot.
 - `backend/tests/test_fase2c_materiales.py`,
-  `TEST_TECNICO_FASE2C.md` y `TEST_FUNCIONAL_FASE2C.md`: pruebas y evidencia.
+[TEST_TECNICO_FASE2C.md](../reportes/TEST_TECNICO_FASE2C.md) y [TEST_FUNCIONAL_FASE2C.md](../reportes/TEST_FUNCIONAL_FASE2C.md): pruebas y evidencia.
 
 Las rutas demo existentes y los contratos APU/WBS previos se conservan.
 

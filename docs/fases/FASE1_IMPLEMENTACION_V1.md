@@ -47,7 +47,7 @@
 
 ### Situación local al inicio
 
-Se observan cambios locales preexistentes en `frontend/BITACORA.md` y archivos no rastreados `ARQUITECTURA_DATOS_V1.md` y `DOCUMENTACION_TECNICA.md`. No se revertirán, sobrescribirán ni incluirán como parte de esta fase.
+Se observan cambios locales preexistentes en `docs/bitacora/BITACORA.md` y archivos no rastreados `ARQUITECTURA_DATOS_V1.md` y `DOCUMENTACION_TECNICA.md`. No se revertirán, sobrescribirán ni incluirán como parte de esta fase.
 
 ## Impacto por módulo
 
@@ -232,12 +232,12 @@ Las siete etapas se implementaron de forma aditiva. Las migraciones compartidas 
 
 | Etapa | Reporte | Estado |
 |---|---|---|
-| 1. Empresa | [REPORTE_ETAPA_1.md](./REPORTE_ETAPA_1.md) | Completada |
-| 2. Usuario y MembresíaEmpresa | [REPORTE_ETAPA_2.md](./REPORTE_ETAPA_2.md) | Completada con limitación de seguridad |
-| 3. Proyecto | [REPORTE_ETAPA_3.md](./REPORTE_ETAPA_3.md) | Completada |
-| 4. VersionProyecto | [REPORTE_ETAPA_4.md](./REPORTE_ETAPA_4.md) | Completada |
-| 5. Auditoría | [REPORTE_ETAPA_5.md](./REPORTE_ETAPA_5.md) | Completada con deuda de gobierno |
-| 6. Persistencia de Mano de Obra | [REPORTE_ETAPA_6.md](./REPORTE_ETAPA_6.md) | Completada |
-| 7. Versionamiento de Mano de Obra | [REPORTE_ETAPA_7.md](./REPORTE_ETAPA_7.md) | Completada |
+| 1. Empresa | [REPORTE_ETAPA_1.md](../reportes/REPORTE_ETAPA_1.md) | Completada |
+| 2. Usuario y MembresíaEmpresa | [REPORTE_ETAPA_2.md](../reportes/REPORTE_ETAPA_2.md) | Completada con limitación de seguridad |
+| 3. Proyecto | [REPORTE_ETAPA_3.md](../reportes/REPORTE_ETAPA_3.md) | Completada |
+| 4. VersionProyecto | [REPORTE_ETAPA_4.md](../reportes/REPORTE_ETAPA_4.md) | Completada |
+| 5. Auditoría | [REPORTE_ETAPA_5.md](../reportes/REPORTE_ETAPA_5.md) | Completada con deuda de gobierno |
+| 6. Persistencia de Mano de Obra | [REPORTE_ETAPA_6.md](../reportes/REPORTE_ETAPA_6.md) | Completada |
+| 7. Versionamiento de Mano de Obra | [REPORTE_ETAPA_7.md](../reportes/REPORTE_ETAPA_7.md) | Completada |
 
 La verificación final ejecutada después de los últimos cambios reportó 16 pruebas backend aprobadas, lint TypeScript aprobado y build de producción aprobado. La evidencia de integración PostgreSQL y el estado de seguridad se detallan en [FASE1_RESULTADO_FINAL.md](./FASE1_RESULTADO_FINAL.md).

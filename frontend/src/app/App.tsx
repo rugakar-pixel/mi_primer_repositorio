@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { CalendarDays, ClipboardList, FileBarChart2, HardHat, Layers3, LayoutDashboard, ListTree, LogOut, Package, TableProperties } from 'lucide-react';
+import { Calculator, CalendarDays, ClipboardList, FileBarChart2, HardHat, Layers3, LayoutDashboard, ListTree, LogOut, Package, TableProperties } from 'lucide-react';
 import { PresupuestoMoModule } from '../modules/presupuesto-mo/PresupuestoMoModule';
 import { MaterialesCostosModule } from '../modules/materiales-costos/MaterialesCostosModule';
 import { MaterialesAPUWorkflow } from '../modules/materiales-costos/MaterialesAPUWorkflow';
@@ -7,16 +7,18 @@ import { WbsEditor } from '../modules/plataforma/WbsEditor';
 import { AccessScreen } from './AccessScreen';
 import { CatalogoMaestroView } from './CatalogoMaestroView';
 import { ProjectDashboard } from './ProjectDashboard';
+import { PresupuestoMaestroView } from '../modules/presupuesto-maestro/PresupuestoMaestroView';
 
 const modules = [
   { id: 'labor', label: 'Mano de Obra', icon: HardHat, available: true },
   { id: 'apu', label: 'Estructura de Costos / APU', icon: ClipboardList, available: true },
   { id: 'materials', label: 'Materiales y costos', icon: Package, available: true },
+  { id: 'master-budget', label: 'Presupuesto Maestro', icon: Calculator, available: true },
   { id: 'equipment', label: 'Herramientas y Equipos', icon: Layers3, available: false },
   { id: 'reports', label: 'Reportes', icon: FileBarChart2, available: false },
 ] as const;
 
-type WorkspaceSection = 'consolidated' | 'wbs' | 'labor' | 'apu' | 'materials' | 'equipment' | 'reports';
+type WorkspaceSection = 'consolidated' | 'wbs' | 'labor' | 'apu' | 'materials' | 'master-budget' | 'equipment' | 'reports';
 type WorkspaceScreen = 'dashboard' | 'module' | 'catalog';
 
 export default function App() {
@@ -180,8 +182,10 @@ export default function App() {
                 ? 'Estructura de desglose del trabajo'
               : activeSection === 'apu'
                 ? 'Análisis de Precios Unitarios'
-                : activeSection === 'materials'
+              : activeSection === 'materials'
                   ? 'Costos de obra'
+                  : activeSection === 'master-budget'
+                    ? 'Presupuesto Maestro'
                   : 'Módulo 1'}
           </div>
           <h1 className="mt-1 text-xl font-bold text-white">
@@ -191,8 +195,10 @@ export default function App() {
                 ? 'Capítulos y partidas'
               : activeSection === 'apu'
                 ? 'Estructura de Costos / APU'
-                : activeSection === 'materials'
+              : activeSection === 'materials'
                   ? 'Materiales reales y cotizaciones'
+                  : activeSection === 'master-budget'
+                    ? 'Presupuesto Maestro mínimo operativo'
                   : 'Módulo de Mano de Obra'}
           </h1>
           <p className="mt-1 max-w-3xl text-sm text-slate-400">
@@ -202,12 +208,14 @@ export default function App() {
                 ? 'Administra la estructura de capítulos y partidas de esta versión del proyecto.'
               : activeSection === 'consolidated'
                 ? 'Consulta el presupuesto consolidado de Mano de Obra y los costos disponibles de materiales, equipos y otros.'
-                : activeSection === 'materials'
+              : activeSection === 'materials'
                   ? 'Consulta materiales y cotizaciones persistidas e intégralos en el APU de una partida versionada.'
+                  : activeSection === 'master-budget'
+                    ? 'Calcula y persiste los totales por partida, capítulo y proyecto de esta versión.'
                   : 'Gestiona las partidas, el flujo semanal, el cronograma y la planilla de mano de obra.'}
           </p>
         </div>
-        <div className={`${activeSection === 'materials' || activeSection === 'wbs' ? 'hidden' : 'block'} px-3 py-5 sm:px-6 lg:px-8`}>
+        <div className={`${activeSection === 'materials' || activeSection === 'wbs' || activeSection === 'master-budget' ? 'hidden' : 'block'} px-3 py-5 sm:px-6 lg:px-8`}>
           <PresupuestoMoModule
             mode={activeSection === 'apu' ? 'apu' : activeSection === 'consolidated' ? 'consolidated' : 'module'}
             onConsolidatedTotalChange={setConsolidatedTotal}
@@ -243,6 +251,17 @@ export default function App() {
         {activeSection === 'wbs' && projectContext && (
           <div className="px-3 py-5 sm:px-6 lg:px-8">
             <WbsEditor
+              projectId={projectContext.projectId}
+              projectName={projectContext.projectName}
+              versionId={projectContext.versionId}
+              versionNumber={projectContext.versionNumber}
+              actorUserId={projectContext.actorUserId}
+            />
+          </div>
+        )}
+        {activeSection === 'master-budget' && projectContext && (
+          <div className="px-3 py-5 sm:px-6 lg:px-8">
+            <PresupuestoMaestroView
               projectId={projectContext.projectId}
               projectName={projectContext.projectName}
               versionId={projectContext.versionId}

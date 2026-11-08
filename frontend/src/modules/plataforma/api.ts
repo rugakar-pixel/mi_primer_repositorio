@@ -128,6 +128,46 @@ export interface WbsStructure {
   capitulos: WbsCapitulo[];
 }
 
+export interface PresupuestoMaestroPartida {
+  id: number;
+  partida_id: number;
+  capitulo_id: number;
+  codigo: string;
+  descripcion: string;
+  unidad: string;
+  cantidad: number;
+  costo_unitario: number;
+  total: number;
+  origen_costo: string;
+  version_apu_id: number | null;
+  uso_apu_id: number | null;
+}
+
+export interface PresupuestoMaestroCapitulo {
+  id: number;
+  capitulo_id: number;
+  codigo: string;
+  nombre: string;
+  total: number;
+  cantidad_partidas: number;
+  partidas: PresupuestoMaestroPartida[];
+}
+
+export interface PresupuestoMaestro {
+  id: number;
+  proyecto_id: number;
+  version_proyecto_id: number;
+  estado: string;
+  moneda: string;
+  total_general: number;
+  revision: number;
+  algoritmo_version: string;
+  actualizado_por_id: number | null;
+  creado_en: string;
+  actualizado_en: string;
+  capitulos: PresupuestoMaestroCapitulo[];
+}
+
 export interface AuditEvent {
   id: number;
   actor_usuario_id: number | null;
@@ -274,6 +314,28 @@ export const platformApi = {
     request<LaborSnapshot>(`/proyectos/${projectId}/versiones/${versionId}/mano-obra`),
   wbs: (projectId: number, versionId: number) =>
     request<WbsStructure>(`/proyectos/${projectId}/versiones/${versionId}/wbs`),
+  masterBudget: (projectId: number, versionId: number) =>
+    request<PresupuestoMaestro>(`/proyectos/${projectId}/versiones/${versionId}/presupuesto-maestro`),
+  calculateMasterBudget: (
+    projectId: number,
+    versionId: number,
+    body: { motivo: string; actualizado_por_id?: number },
+  ) =>
+    post<PresupuestoMaestro>(
+      `/proyectos/${projectId}/versiones/${versionId}/presupuesto-maestro/calcular`,
+      body,
+    ),
+  updatePartCost: (
+    projectId: number,
+    versionId: number,
+    chapterId: number,
+    partId: number,
+    body: { costo_unitario: number; motivo: string; actualizado_por_id?: number },
+  ) =>
+    request<PresupuestoMaestro>(
+      `/proyectos/${projectId}/versiones/${versionId}/capitulos/${chapterId}/partidas/${partId}/costo`,
+      { method: 'PUT', body: JSON.stringify(body) },
+    ),
   comparison: (projectId: number, sourceId: number, targetId: number) =>
     request<LaborComparison>(
       `/proyectos/${projectId}/mano-obra/comparar?desde=${sourceId}&hasta=${targetId}`,

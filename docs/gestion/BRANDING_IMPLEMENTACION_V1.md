@@ -11,7 +11,7 @@
 - `ARQUITECTURA_DATOS_V1.md`
 - `PROJECT_STATUS.md` (creado)
 - `MARCA_OFICIAL_V1.md` (creado)
-- `FASE1_IMPLEMENTACION_V1.md`
+- [FASE1_IMPLEMENTACION_V1.md](../fases/FASE1_IMPLEMENTACION_V1.md)
 - `FASE1_RESULTADO_FINAL.md`
 - `FASE2A_DISENO_WBS.md`
 - `FASE2A_RESULTADO_FINAL.md`
@@ -22,8 +22,8 @@
 - `frontend/src/app/App.tsx`
 - `frontend/src/app/ProjectDashboard.tsx`
 - `frontend/src/app/CatalogoMaestroView.tsx`
-- `frontend/BITACORA.md`
-- `.github/copilot-instructions.md`
+- [BITACORA.md](../bitacora/BITACORA.md)
+- [AI_PROJECT_CONSTITUTION.md](./AI_PROJECT_CONSTITUTION.md)
 - `RENAME_IMPACT_ANALYSIS.md` (marcado como sustituido)
 - `RENOMBRE_PROPUESTA_FINAL.md` (archivado como sustituido)
 

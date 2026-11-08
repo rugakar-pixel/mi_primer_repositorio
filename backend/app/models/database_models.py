@@ -170,6 +170,10 @@ class VersionProyecto(Base):
         back_populates="version_proyecto",
         order_by="Capitulo.codigo",
     )
+    presupuesto_maestro: Mapped["PresupuestoMaestro | None"] = relationship(
+        back_populates="version_proyecto",
+        uselist=False,
+    )
 
 
 class AuditoriaEvento(Base):
@@ -334,6 +338,102 @@ class PresupuestoMOLinea(Base):
     ratio_ayudantes: Mapped[Decimal | None] = mapped_column(Numeric(18, 6))
 
     presupuesto_mo: Mapped[PresupuestoMOBorrador] = relationship(back_populates="lineas")
+
+
+class PresupuestoMaestro(Base):
+    __tablename__ = "presupuestos_maestros"
+    __table_args__ = (
+        UniqueConstraint("version_proyecto_id", name="uq_presupuestos_maestros_version"),
+        CheckConstraint("total_general >= 0", name="ck_presupuestos_maestros_total_no_negativo"),
+        CheckConstraint("revision > 0", name="ck_presupuestos_maestros_revision_positiva"),
+        Index("ix_presupuestos_maestros_proyecto", "proyecto_id", "version_proyecto_id"),
+    )
+
+    id: Mapped[int] = mapped_column(primary_key=True)
+    proyecto_id: Mapped[int] = mapped_column(ForeignKey("proyectos.id", ondelete="RESTRICT"), nullable=False)
+    version_proyecto_id: Mapped[int] = mapped_column(
+        ForeignKey("versiones_proyecto.id", ondelete="RESTRICT"),
+        nullable=False,
+    )
+    estado: Mapped[str] = mapped_column(String(30), default="Borrador", server_default="Borrador", nullable=False)
+    moneda: Mapped[str] = mapped_column(String(3), default="NIO", server_default="NIO", nullable=False)
+    total_general: Mapped[Decimal] = mapped_column(Numeric(18, 4), default=Decimal("0"), server_default="0", nullable=False)
+    revision: Mapped[int] = mapped_column(Integer, default=1, server_default="1", nullable=False)
+    algoritmo_version: Mapped[str] = mapped_column(String(40), default="presupuesto-maestro-2d1-v1", nullable=False)
+    actualizado_por_id: Mapped[int | None] = mapped_column(ForeignKey("usuarios.id", ondelete="SET NULL"))
+    creado_en: Mapped[datetime] = mapped_column(DateTime(timezone=True), server_default=func.now(), nullable=False)
+    actualizado_en: Mapped[datetime] = mapped_column(
+        DateTime(timezone=True),
+        server_default=func.now(),
+        onupdate=func.now(),
+        nullable=False,
+    )
+
+    version_proyecto: Mapped[VersionProyecto] = relationship(back_populates="presupuesto_maestro")
+    capitulos: Mapped[list["PresupuestoMaestroCapitulo"]] = relationship(
+        back_populates="presupuesto_maestro",
+        cascade="all, delete-orphan",
+        order_by="PresupuestoMaestroCapitulo.codigo",
+    )
+    partidas: Mapped[list["PresupuestoMaestroPartida"]] = relationship(
+        back_populates="presupuesto_maestro",
+        cascade="all, delete-orphan",
+        order_by="PresupuestoMaestroPartida.codigo",
+    )
+
+
+class PresupuestoMaestroCapitulo(Base):
+    __tablename__ = "presupuestos_maestros_capitulos"
+    __table_args__ = (
+        UniqueConstraint("presupuesto_maestro_id", "capitulo_id", name="uq_presupuesto_maestro_capitulo"),
+        CheckConstraint("total >= 0", name="ck_presupuesto_maestro_capitulo_total"),
+        Index("ix_presupuesto_maestro_capitulos_presupuesto", "presupuesto_maestro_id", "codigo"),
+    )
+
+    id: Mapped[int] = mapped_column(primary_key=True)
+    presupuesto_maestro_id: Mapped[int] = mapped_column(
+        ForeignKey("presupuestos_maestros.id", ondelete="CASCADE"),
+        nullable=False,
+    )
+    capitulo_id: Mapped[int] = mapped_column(ForeignKey("capitulos.id", ondelete="RESTRICT"), nullable=False)
+    codigo: Mapped[str] = mapped_column(String(30), nullable=False)
+    nombre: Mapped[str] = mapped_column(String(200), nullable=False)
+    total: Mapped[Decimal] = mapped_column(Numeric(18, 4), default=Decimal("0"), server_default="0", nullable=False)
+    cantidad_partidas: Mapped[int] = mapped_column(Integer, default=0, server_default="0", nullable=False)
+    creado_en: Mapped[datetime] = mapped_column(DateTime(timezone=True), server_default=func.now(), nullable=False)
+
+    presupuesto_maestro: Mapped[PresupuestoMaestro] = relationship(back_populates="capitulos")
+
+
+class PresupuestoMaestroPartida(Base):
+    __tablename__ = "presupuestos_maestros_partidas"
+    __table_args__ = (
+        UniqueConstraint("presupuesto_maestro_id", "partida_id", name="uq_presupuesto_maestro_partida"),
+        CheckConstraint("cantidad >= 0", name="ck_presupuesto_maestro_partida_cantidad"),
+        CheckConstraint("costo_unitario >= 0", name="ck_presupuesto_maestro_partida_costo"),
+        CheckConstraint("total >= 0", name="ck_presupuesto_maestro_partida_total"),
+        Index("ix_presupuesto_maestro_partidas_presupuesto", "presupuesto_maestro_id", "codigo"),
+    )
+
+    id: Mapped[int] = mapped_column(primary_key=True)
+    presupuesto_maestro_id: Mapped[int] = mapped_column(
+        ForeignKey("presupuestos_maestros.id", ondelete="CASCADE"),
+        nullable=False,
+    )
+    partida_id: Mapped[int] = mapped_column(ForeignKey("partidas.id", ondelete="RESTRICT"), nullable=False)
+    capitulo_id: Mapped[int] = mapped_column(ForeignKey("capitulos.id", ondelete="RESTRICT"), nullable=False)
+    codigo: Mapped[str] = mapped_column(String(50), nullable=False)
+    descripcion: Mapped[str] = mapped_column(String(500), nullable=False)
+    unidad: Mapped[str] = mapped_column(String(30), nullable=False)
+    cantidad: Mapped[Decimal] = mapped_column(Numeric(18, 4), nullable=False)
+    costo_unitario: Mapped[Decimal] = mapped_column(Numeric(18, 4), nullable=False)
+    total: Mapped[Decimal] = mapped_column(Numeric(18, 4), nullable=False)
+    origen_costo: Mapped[str] = mapped_column(String(40), nullable=False)
+    version_apu_id: Mapped[int | None] = mapped_column(ForeignKey("versiones_apu.id", ondelete="SET NULL"))
+    uso_apu_id: Mapped[int | None] = mapped_column(ForeignKey("usos_apu.id", ondelete="SET NULL"))
+    creado_en: Mapped[datetime] = mapped_column(DateTime(timezone=True), server_default=func.now(), nullable=False)
+
+    presupuesto_maestro: Mapped[PresupuestoMaestro] = relationship(back_populates="partidas")
 
 
 class Capitulo(Base):

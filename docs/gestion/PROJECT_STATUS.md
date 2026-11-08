@@ -42,4 +42,4 @@ provisional sustituida por la decisión de Dirección del 2026-11-06.
 El cambio de marca no autoriza renombrar tablas, modelos, migraciones, rutas
 API, paquetes, repositorio, variables de entorno ni identificadores técnicos.
 Consultar [MARCA_OFICIAL_V1.md](./MARCA_OFICIAL_V1.md) y
-[DOCUMENTACION_TECNICA.md](./DOCUMENTACION_TECNICA.md) para el detalle.
+[DOCUMENTACION_TECNICA.md](../arquitectura/DOCUMENTACION_TECNICA.md) para el detalle.
