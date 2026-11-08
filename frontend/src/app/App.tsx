@@ -1,7 +1,9 @@
 import { useState } from 'react';
-import { CalendarDays, ClipboardList, FileBarChart2, HardHat, Layers3, LayoutDashboard, LogOut, Package, TableProperties } from 'lucide-react';
+import { CalendarDays, ClipboardList, FileBarChart2, HardHat, Layers3, LayoutDashboard, ListTree, LogOut, Package, TableProperties } from 'lucide-react';
 import { PresupuestoMoModule } from '../modules/presupuesto-mo/PresupuestoMoModule';
 import { MaterialesCostosModule } from '../modules/materiales-costos/MaterialesCostosModule';
+import { MaterialesAPUWorkflow } from '../modules/materiales-costos/MaterialesAPUWorkflow';
+import { WbsEditor } from '../modules/plataforma/WbsEditor';
 import { AccessScreen } from './AccessScreen';
 import { CatalogoMaestroView } from './CatalogoMaestroView';
 import { ProjectDashboard } from './ProjectDashboard';
@@ -14,7 +16,7 @@ const modules = [
   { id: 'reports', label: 'Reportes', icon: FileBarChart2, available: false },
 ] as const;
 
-type WorkspaceSection = 'consolidated' | 'labor' | 'apu' | 'materials' | 'equipment' | 'reports';
+type WorkspaceSection = 'consolidated' | 'wbs' | 'labor' | 'apu' | 'materials' | 'equipment' | 'reports';
 type WorkspaceScreen = 'dashboard' | 'module' | 'catalog';
 
 export default function App() {
@@ -23,6 +25,13 @@ export default function App() {
   const [activeSection, setActiveSection] = useState<WorkspaceSection>('consolidated');
   const [screen, setScreen] = useState<WorkspaceScreen>('dashboard');
   const [consolidatedTotal, setConsolidatedTotal] = useState<number | null>(null);
+  const [projectContext, setProjectContext] = useState<{
+    projectId: number;
+    versionId: number;
+    projectName: string;
+    versionNumber: number;
+    actorUserId?: number;
+  } | null>(null);
 
   const handleLogin = (username: string, password: string) => {
     if (username.trim() !== 'Usuario' || password !== 'Contraseña') {
@@ -33,6 +42,7 @@ export default function App() {
     setLoginError('');
     setActiveSection('consolidated');
     setScreen('dashboard');
+    setProjectContext(null);
     setUser(username.trim());
   };
 
@@ -46,12 +56,16 @@ export default function App() {
         <ProjectDashboard
           username={user}
           consolidatedTotal={consolidatedTotal}
-          onOpenProject={() => {
+          onOpenProject={(project) => {
+            setProjectContext(project ?? null);
             setActiveSection('consolidated');
             setScreen('module');
           }}
           onOpenCatalog={() => setScreen('catalog')}
-          onLogout={() => setUser(null)}
+          onLogout={() => {
+            setProjectContext(null);
+            setUser(null);
+          }}
         />
       </div>
 
@@ -68,9 +82,10 @@ export default function App() {
           <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-gradient-to-br from-blue-600 to-indigo-700 text-white">
             <LayoutDashboard className="h-5 w-5" />
           </div>
-          <div>
-            <p className="text-sm font-bold text-white">Motor de Presupuesto</p>
-            <p className="text-xs text-slate-400">Gestión de proyectos</p>
+          <div className="min-w-0">
+            <p className="text-sm font-bold text-white">COS</p>
+            <p className="text-[10px] leading-tight text-slate-300">Construction Operating System</p>
+            <p className="text-[10px] leading-tight text-slate-400">Gerente Administrativo IA para Construcción</p>
           </div>
         </button>
 
@@ -90,6 +105,23 @@ export default function App() {
           >
             <TableProperties className="h-4 w-4 shrink-0" />
             <span>Consolidado</span>
+          </button>
+          <button
+            type="button"
+            onClick={() => projectContext && setActiveSection('wbs')}
+            disabled={!projectContext}
+            aria-current={activeSection === 'wbs' ? 'page' : undefined}
+            title={projectContext ? 'Estructura WBS' : 'Abre una versión persistida para editar su WBS'}
+            className={`mb-5 flex min-h-11 w-full items-center gap-3 rounded-lg px-3 py-2 text-left text-sm transition-colors ${
+              activeSection === 'wbs'
+                ? 'bg-blue-600/15 font-semibold text-blue-300 ring-1 ring-inset ring-blue-500/30'
+                : projectContext
+                  ? 'text-slate-300 hover:bg-slate-800'
+                  : 'cursor-not-allowed text-slate-500'
+            }`}
+          >
+            <ListTree className="h-4 w-4 shrink-0" />
+            <span>Estructura WBS</span>
           </button>
 
           <p className="mb-3 px-3 text-[11px] font-semibold uppercase tracking-wider text-slate-500">
@@ -144,6 +176,8 @@ export default function App() {
             <CalendarDays className="h-4 w-4 text-blue-400" />
             {activeSection === 'consolidated'
               ? 'Presupuesto del proyecto'
+              : activeSection === 'wbs'
+                ? 'Estructura de desglose del trabajo'
               : activeSection === 'apu'
                 ? 'Análisis de Precios Unitarios'
                 : activeSection === 'materials'
@@ -153,31 +187,68 @@ export default function App() {
           <h1 className="mt-1 text-xl font-bold text-white">
             {activeSection === 'consolidated'
               ? 'Consolidado del proyecto'
+              : activeSection === 'wbs'
+                ? 'Capítulos y partidas'
               : activeSection === 'apu'
                 ? 'Estructura de Costos / APU'
                 : activeSection === 'materials'
-                  ? 'Materiales y costos de obra'
+                  ? 'Materiales reales y cotizaciones'
                   : 'Módulo de Mano de Obra'}
           </h1>
           <p className="mt-1 max-w-3xl text-sm text-slate-400">
             {activeSection === 'apu'
-              ? 'Consulta el costo de Mano de Obra de las actividades actuales y el espacio reservado para Materiales y Maquinaria/Equipos.'
+            ? 'Consulta Mano de Obra y vincula materiales con cotizaciones persistidas al APU de una partida versionada.'
+              : activeSection === 'wbs'
+                ? 'Administra la estructura de capítulos y partidas de esta versión del proyecto.'
               : activeSection === 'consolidated'
                 ? 'Consulta el presupuesto consolidado de Mano de Obra y los costos disponibles de materiales, equipos y otros.'
                 : activeSection === 'materials'
-                  ? 'Consulta el ejemplo integrado de materiales, renta de equipos, herramientas y costos indirectos.'
+                  ? 'Consulta materiales y cotizaciones persistidas e intégralos en el APU de una partida versionada.'
                   : 'Gestiona las partidas, el flujo semanal, el cronograma y la planilla de mano de obra.'}
           </p>
         </div>
-        <div className={`${activeSection === 'materials' ? 'hidden' : 'block'} px-3 py-5 sm:px-6 lg:px-8`}>
+        <div className={`${activeSection === 'materials' || activeSection === 'wbs' ? 'hidden' : 'block'} px-3 py-5 sm:px-6 lg:px-8`}>
           <PresupuestoMoModule
             mode={activeSection === 'apu' ? 'apu' : activeSection === 'consolidated' ? 'consolidated' : 'module'}
             onConsolidatedTotalChange={setConsolidatedTotal}
+            persistedContext={projectContext ?? undefined}
           />
+          {activeSection === 'apu' && projectContext && (
+            <div className="mt-6">
+              <MaterialesAPUWorkflow
+                projectId={projectContext.projectId}
+                projectName={projectContext.projectName}
+                versionId={projectContext.versionId}
+                versionNumber={projectContext.versionNumber}
+                actorUserId={projectContext.actorUserId}
+              />
+            </div>
+          )}
         </div>
         {activeSection === 'materials' && (
           <div className="px-3 py-5 sm:px-6 lg:px-8">
-          <MaterialesCostosModule onBackToDashboard={() => setScreen('dashboard')} />
+            {projectContext ? (
+              <MaterialesAPUWorkflow
+                projectId={projectContext.projectId}
+                projectName={projectContext.projectName}
+                versionId={projectContext.versionId}
+                versionNumber={projectContext.versionNumber}
+                actorUserId={projectContext.actorUserId}
+              />
+            ) : (
+              <MaterialesCostosModule onBackToDashboard={() => setScreen('dashboard')} />
+            )}
+          </div>
+        )}
+        {activeSection === 'wbs' && projectContext && (
+          <div className="px-3 py-5 sm:px-6 lg:px-8">
+            <WbsEditor
+              projectId={projectContext.projectId}
+              projectName={projectContext.projectName}
+              versionId={projectContext.versionId}
+              versionNumber={projectContext.versionNumber}
+              actorUserId={projectContext.actorUserId}
+            />
           </div>
         )}
       </main>

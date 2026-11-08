@@ -1,11 +1,160 @@
 # Bitácora del proyecto
 
+## Decisión de marca oficial
+
+**Fecha de aprobación:** 2026-11-06
+**Nombre:** COS — Construction Operating System
+**Descriptor:** Gerente Administrativo IA para Construcción.
+
+Esta decisión sustituye la propuesta provisional ObraNexa y es la identidad
+oficial vigente del producto.
+
 ## Perfil del usuario
 
 El usuario es ingeniero civil, sabe usar Revit y le interesa conocer los costos
 de producción de las cosas y automatizar procesos. Tener este enfoque presente
 al explicar decisiones: usar ejemplos claros de obra, presupuestos y costos,
 evitando tecnicismos innecesarios.
+
+## Actualización de Visión Estratégica del Proyecto
+
+Fecha: 2026-11-05
+
+### Cambio Estratégico de Dirección
+
+Después del análisis técnico y funcional del proyecto se redefine oficialmente
+el objetivo estratégico del sistema.
+
+El proyecto deja de concebirse como una aplicación de presupuestos de
+construcción y pasa a definirse como una plataforma integral de gestión
+administrativa para proyectos de ingeniería y construcción impulsada por
+Inteligencia Artificial.
+
+### Visión del Producto
+
+Construir un Gerente Administrativo IA especializado en obras civiles, capaz de
+analizar documentación técnica, interpretar requisitos de obra, generar
+presupuestos profesionales, administrar costos, controlar información
+financiera y producir documentación ejecutiva conforme a estándares
+internacionales de construcción.
+
+### Misión
+
+Permitir que un usuario entregue información parcial o completa de un proyecto
+y que el sistema sea capaz de transformarla en conocimiento estructurado para la
+toma de decisiones.
+
+Entradas posibles:
+
+- Planos arquitectónicos
+- Planos estructurales
+- Planos de instalaciones
+- Especificaciones técnicas
+- Catálogos de partidas
+- Contratos
+- Cotizaciones
+- Estudios de suelo
+- Excel históricos
+- Bases de datos de costos
+- Fotografías de obra
+- Reportes técnicos
+
+### Resultado Esperado
+
+El sistema deberá ser capaz de generar:
+
+- Estructura WBS
+- Catálogo de partidas
+- APU
+- Presupuesto detallado
+- Costos directos
+- Costos indirectos
+- Cronograma base
+- Flujo financiero
+- Reportes ejecutivos
+- Reportes técnicos
+- Documentación para licitación
+- Memorias de cálculo
+
+### Principio de Evolución
+
+Toda nueva funcionalidad deberá construirse sobre los módulos existentes.
+
+Regla de arquitectura:
+
+- NO reemplazar módulos funcionales.
+- NO destruir módulos existentes.
+- NO rehacer funcionalidades operativas.
+- SI extender capacidades existentes.
+- SI reutilizar lógica validada.
+- SI mantener compatibilidad hacia atrás.
+- SI preservar trazabilidad.
+- Cada módulo desarrollado deberá permanecer operativo y convertirse en parte
+  del producto final.
+
+### Arquitectura Objetivo
+
+```text
+Gerente Administrativo IA
+├── Gestión Documental
+├── Gestión de Proyectos
+├── Catálogo de Partidas
+├── APU
+├── Mano de Obra
+├── Materiales
+├── Equipos
+├── Subcontratos
+├── Presupuesto Maestro
+├── Control Financiero
+├── Reportes
+├── Auditoría
+├── Base de Conocimiento
+└── Agente IA
+```
+
+### Prioridades Estratégicas
+
+#### Prioridad 1 — Persistencia completa de proyectos
+
+**Objetivo:** convertir el sistema en una plataforma real de trabajo donde toda
+la información permanezca almacenada y versionada.
+
+#### Prioridad 2 — Motor único de costos y presupuestos
+
+**Objetivo:** integrar todas las fuentes de costos bajo una única estructura
+presupuestaria:
+
+- Mano de Obra
+- Materiales
+- Equipos
+- Subcontratos
+- Otros Costos
+
+#### Prioridad 3 — Base de conocimiento técnica
+
+**Objetivo:** crear la fuente de conocimiento que utilizará el futuro agente.
+
+#### Prioridad 4 — Agente Administrativo IA
+
+**Objetivo:** transformar los datos operativos y técnicos en inteligencia para
+la toma de decisiones.
+
+### Meta Final
+
+El proyecto será considerado exitoso cuando un usuario pueda cargar la
+documentación de una obra y el sistema genere automáticamente:
+
+- Presupuesto profesional
+- APU completos
+- Cronograma base
+- Flujo financiero
+- Informe ejecutivo
+- Informe técnico
+- Excel
+- Word
+- PDF
+
+Todo con trazabilidad, justificación técnica y capacidad de auditoría.
 
 ## Importante: inicio manual de la aplicación
 

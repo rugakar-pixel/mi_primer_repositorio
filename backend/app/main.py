@@ -16,7 +16,11 @@ from app.db.session import engine
 from app.api.v1.catalogo import router as catalogo_router
 from app.api.v1.consolidado import router as consolidado_router
 from app.api.v1.materiales_costos import router as materiales_costos_router
+from app.api.v1.materiales import router as materiales_router
 from app.api.v1.partidas import router as partidas_router
+from app.api.v1.plataforma import router as plataforma_router
+from app.api.v1.wbs import router as wbs_router
+from app.api.v1.apu_maestro import router as apu_maestro_router
 from app.models import database_models
 
 
@@ -44,13 +48,17 @@ app.add_middleware(
 		"http://127.0.0.1:5173",
 	],
 	allow_credentials=False,
-	allow_methods=["GET", "POST"],
+	allow_methods=["GET", "POST", "PUT"],
 	allow_headers=["*"],
 )
 app.include_router(catalogo_router, prefix="/api/v1")
 app.include_router(consolidado_router, prefix="/api")
 app.include_router(partidas_router, prefix="/api/v1")
 app.include_router(materiales_costos_router, prefix="/api/v1")
+app.include_router(materiales_router, prefix="/api/v1")
+app.include_router(plataforma_router, prefix="/api/v1")
+app.include_router(wbs_router, prefix="/api/v1")
+app.include_router(apu_maestro_router, prefix="/api/v1")
 
 
 @app.get("/")

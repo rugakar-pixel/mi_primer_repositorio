@@ -16,7 +16,7 @@ export function EstructuraCostosView({ actividades, cronograma }: EstructuraCost
         <p className="text-xs font-semibold uppercase tracking-wider text-blue-300">Análisis de Precios Unitarios</p>
         <h2 className="mt-1 text-2xl font-bold text-white">Estructura de Costos</h2>
         <p className="mt-2 text-sm text-slate-400">
-          Mano de Obra usa los cálculos vigentes. Materiales y Equipos se muestran en un módulo de ejemplo independiente y todavía no se suman a estas actividades.
+          Mano de Obra conserva su cálculo existente. El APU de materiales reales, con precio y proveedor congelados por versión, se administra en el motor de materiales de esta pantalla.
         </p>
       </header>
 
@@ -28,8 +28,8 @@ export function EstructuraCostosView({ actividades, cronograma }: EstructuraCost
         </article>
         <article className="rounded-xl border border-slate-700 bg-slate-900/70 p-5">
           <div className="flex items-center gap-2 text-sm font-semibold text-slate-300"><Package className="h-4 w-4" /> Materiales</div>
-          <p className="mt-3 text-2xl font-bold text-white">{moneda(0)}</p>
-          <p className="mt-1 text-xs text-amber-300">Aún no vinculado a este APU</p>
+          <p className="mt-3 text-lg font-bold text-white">Motor versionado abajo</p>
+          <p className="mt-1 text-xs text-slate-400">Precio real, proveedor, cotización y snapshot por partida</p>
         </article>
         <article className="rounded-xl border border-slate-700 bg-slate-900/70 p-5">
           <div className="flex items-center gap-2 text-sm font-semibold text-slate-300"><Wrench className="h-4 w-4" /> Maquinaria y Equipos</div>

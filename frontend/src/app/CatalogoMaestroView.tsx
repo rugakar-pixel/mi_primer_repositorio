@@ -103,6 +103,8 @@ export function CatalogoMaestroView({ onBack }: CatalogoMaestroViewProps) {
               <Database className="h-5 w-5" />
             </div>
             <div className="min-w-0">
+              <p className="text-[10px] font-semibold text-blue-300">COS — Construction Operating System</p>
+              <p className="text-[10px] leading-tight text-slate-400">Gerente Administrativo IA para Construcción</p>
               <p className="text-xs font-semibold uppercase tracking-wider text-blue-300">Referencia histórica</p>
               <h1 className="truncate text-lg font-bold text-white sm:text-xl">Visor del Catálogo Maestro</h1>
             </div>

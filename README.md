@@ -1,7 +1,15 @@
-# Motor de Presupuesto MO y Flujo de Caja
+# COS — Construction Operating System
 
-Aplicación web para presupuesto de mano de obra, cronograma, planilla y exportación a Excel.
-El proyecto separa el frontend existente del esqueleto inicial del backend.
+**Descriptor oficial:** Gerente Administrativo IA para Construcción.
+
+COS es el sistema operativo de gestión administrativa para construcción. El
+prototipo actual incluye empresas y proyectos/versiones, estructura WBS,
+presupuesto de mano de obra, costos/APU, consolidado y exportación a Excel. La
+visión del producto es evolucionar hacia un Gerente Administrativo IA para
+Construcción; la inteligencia artificial y el análisis documental aún no son
+funcionalidades disponibles. La denominación inicial del proyecto fue
+"Motor de Presupuesto MO y Flujo de Caja Nicaragua 2026"; ObraNexa fue un nombre
+de trabajo propuesto y posteriormente sustituido por la decisión oficial COS.
 
 ## Estructura principal
 
@@ -120,3 +128,61 @@ La interfaz básica no requiere Python ni una clave de Gemini. El Visor del
 Catálogo Maestro y la vista Consolidado sí requieren el backend. Después del
 acceso de demostración, el Tablero muestra el total informado por el
 Consolidado.
+
+## Persistencia de empresas, proyectos y Mano de Obra (Fase 1)
+
+La Fase 1 agrega empresas, usuarios de directorio, membresías, proyectos y
+versiones, auditoría y snapshots versionados de Mano de Obra. Las tablas
+existentes de proyectos, capítulos, partidas, APU y catálogo se conservan; las
+migraciones no eliminan ni renombran datos.
+
+Antes de habilitar estos flujos en una base PostgreSQL, configura
+`backend\.env` con `DATABASE_URL`, toma el respaldo operacional habitual y
+ejecuta las migraciones, en orden, desde `backend`:
+
+```powershell
+.\.venv\Scripts\python.exe -m app.apply_migration 001
+.\.venv\Scripts\python.exe -m app.apply_migration 002
+.\.venv\Scripts\python.exe -m app.apply_migration 003
+.\.venv\Scripts\python.exe -m app.apply_migration 004
+```
+
+El ejecutor crea únicamente objetos faltantes, registra las migraciones 002–004
+y verifica tablas/columnas. Ejecuta las migraciones una vez por base; el
+ejecutor valida y reporta si una migración numerada ya estaba aplicada. Reinicia
+el backend después de aplicarlas. La migración 001 continúa siendo compatible
+con el comando anterior sin argumento.
+
+Desde el Tablero Central puedes crear una empresa, registrar usuarios,
+asociarlos a una empresa y crear proyectos. Selecciona un proyecto para crear
+su Versión 1; desde allí puedes guardar la Mano de Obra. Crear una versión
+posterior copia su snapshot de Mano de Obra, de modo que los cambios en Versión
+2 no alteren la Versión 1. El tablero permite comparar líneas y totales de MO.
+Los cambios guardados sobreviven al reinicio del backend.
+
+Las rutas nuevas se encuentran bajo `/api/v1`; las APIs anteriores permanecen
+sin cambios. La Mano de Obra guardada conserva la configuración y entradas, y
+usa el motor de cálculo existente en el frontend. El backend calcula y guarda
+el total auditable de MO; no sustituye el consolidado ni convierte los datos
+demo de Materiales y Costos en precios reales.
+
+**Límite importante:** el acceso actual continúa siendo de demostración. Los
+usuarios y membresías de esta fase son registros de directorio, no credenciales
+ni una barrera de autorización. La selección de un usuario como actor permite
+atribuir cambios, pero no verifica su identidad. No expongas la API ni guardes
+información sensible o de clientes en un entorno multiempresa hasta añadir
+autenticación y autorización reales.
+
+## Estructura WBS por versión (Fase 2A)
+
+La migración 004 asocia los capítulos existentes con versiones de proyecto sin
+reasignar ni eliminar filas históricas. La nueva **Estructura WBS** permite
+administrar capítulos y partidas en la versión persistida abierta. Al crear una
+versión desde otra, se copia su árbol estructural con registros nuevos; editar
+la versión destino no modifica la versión de origen. En esta fase las partidas
+solo guardan código, descripción, unidad, cantidad y rendimiento. No se
+implementan materiales, equipos ni consolidado.
+
+Consulta [FASE2A_DISENO_WBS.md](./FASE2A_DISENO_WBS.md) para el modelo y las
+rutas API, y [FASE2A_RESULTADO_FINAL.md](./FASE2A_RESULTADO_FINAL.md) para la
+validación realizada.

@@ -22,8 +22,9 @@ export function AccessScreen({ onLogin, error }: AccessScreenProps) {
           <div className="mx-auto flex h-14 w-14 items-center justify-center rounded-2xl bg-gradient-to-br from-blue-600 to-indigo-700 text-white shadow-lg shadow-blue-950/50">
             <HardHat className="h-7 w-7" />
           </div>
-          <p className="mt-5 text-xs font-semibold uppercase tracking-[0.2em] text-blue-300">Gestión de proyectos</p>
-          <h1 className="mt-2 text-2xl font-bold text-white">Motor de Presupuesto</h1>
+          <h1 className="mt-5 text-3xl font-bold text-white">COS</h1>
+          <p className="mt-1 text-xs font-semibold tracking-wide text-blue-300">Construction Operating System</p>
+          <p className="mt-2 text-sm text-slate-300">Gerente Administrativo IA para Construcción</p>
           <p className="mt-2 text-sm text-slate-400">Ingresa para acceder al espacio de trabajo</p>
         </div>
 

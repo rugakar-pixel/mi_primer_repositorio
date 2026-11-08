@@ -1,4 +1,4 @@
-import React, { useMemo, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import { Actividad, ConfiguracionLaboral } from './types/budget';
 import {
   CONFIG_NICARAGUA_2026_DEFAULT,
@@ -26,16 +26,26 @@ import {
   Users,
   PlusCircle,
   ExternalLink,
+  Save,
 } from 'lucide-react';
+import { LaborActivity, platformApi } from '../plataforma/api';
 
 interface PresupuestoMoModuleProps {
   mode?: 'module' | 'consolidated' | 'apu';
   onConsolidatedTotalChange?: (total: number) => void;
+  persistedContext?: {
+    projectId: number;
+    versionId: number;
+    projectName: string;
+    versionNumber: number;
+    actorUserId?: number;
+  };
 }
 
 export function PresupuestoMoModule({
   mode = 'module',
   onConsolidatedTotalChange = () => undefined,
+  persistedContext,
 }: PresupuestoMoModuleProps) {
   const [config, setConfig] = useState<ConfiguracionLaboral>(CONFIG_NICARAGUA_2026_DEFAULT);
   const [actividades, setActividades] = useState<Actividad[]>(ITEMS_EBAR_SUR_2_DEFAULT);
@@ -46,6 +56,95 @@ export function PresupuestoMoModule({
   const [isConfigModalOpen, setIsConfigModalOpen] = useState(false);
   const [actividadEditar, setActividadEditar] = useState<Actividad | null>(null);
   const [isExporting, setIsExporting] = useState(false);
+  const [isLoadingSaved, setIsLoadingSaved] = useState(false);
+  const [isSaving, setIsSaving] = useState(false);
+  const [persistError, setPersistError] = useState('');
+  const [persistFeedback, setPersistFeedback] = useState('');
+  const [persistReason, setPersistReason] = useState('');
+  const [persistRevision, setPersistRevision] = useState<number | null>(null);
+  const [hasUnsavedChanges, setHasUnsavedChanges] = useState(false);
+  const [loadAttempt, setLoadAttempt] = useState(0);
+
+  useEffect(() => {
+    if (!persistedContext) {
+      setIsLoadingSaved(false);
+      setPersistError('');
+      setPersistReason('');
+      setPersistRevision(null);
+      setHasUnsavedChanges(false);
+      setNombreProyecto('EBAR SUR 2');
+      setConfig(CONFIG_NICARAGUA_2026_DEFAULT);
+      setActividades(ITEMS_EBAR_SUR_2_DEFAULT);
+      return;
+    }
+
+    let active = true;
+    setIsLoadingSaved(true);
+    setPersistError('');
+    setPersistFeedback('');
+    setPersistReason('');
+    setHasUnsavedChanges(false);
+    setPersistRevision(null);
+    setNombreProyecto(persistedContext.projectName);
+    setActividades([]);
+    setConfig(CONFIG_NICARAGUA_2026_DEFAULT);
+
+    platformApi.labor(persistedContext.projectId, persistedContext.versionId)
+      .then((snapshot) => {
+        if (!active) return;
+        const laborConfig: ConfiguracionLaboral = {
+          salarioMinimoMensual: snapshot.configuracion.salario_minimo_mensual,
+          diasMesComercial: snapshot.configuracion.dias_mes_comercial,
+          horasJornadaDiaria: snapshot.configuracion.horas_jornada_diaria,
+          horasSemanaMax: snapshot.configuracion.horas_semana_max,
+          diasSemanaLaboral: snapshot.configuracion.dias_semana_laboral,
+          factorOficial: snapshot.configuracion.factor_oficial,
+          pctAguinaldo: snapshot.configuracion.pct_aguinaldo,
+          pctVacaciones: snapshot.configuracion.pct_vacaciones,
+          pctInssPatronal: snapshot.configuracion.pct_inss_patronal,
+          pctInatec: snapshot.configuracion.pct_inatec,
+          pctIndemnizacion: snapshot.configuracion.pct_indemnizacion,
+          pctInssLaboral: snapshot.configuracion.pct_inss_laboral,
+        };
+        const activities: Actividad[] = snapshot.actividades.map((activity: LaborActivity) => ({
+          id: activity.id,
+          item: activity.item,
+          descripcion: activity.descripcion,
+          unidadMedida: activity.unidad_medida,
+          cantidad: activity.cantidad,
+          rendimientoBaseOficial: activity.rendimiento_base_oficial,
+          cantOficiales: activity.cant_oficiales,
+          cantAyudantes: activity.cant_ayudantes,
+          ratioAyudantes: activity.ratio_ayudantes,
+        }));
+        setConfig(laborConfig);
+        setActividades(activities);
+        setPersistRevision(snapshot.revision);
+        setPersistFeedback(snapshot.guardado ? 'Mano de Obra recuperada de la base de datos.' : 'Versión nueva: agrega las actividades y guarda para persistir la Mano de Obra.');
+      })
+      .catch((reason: unknown) => {
+        if (active) {
+          setPersistError(reason instanceof Error ? reason.message : 'No se pudo recuperar la Mano de Obra.');
+        }
+      })
+      .finally(() => {
+        if (active) setIsLoadingSaved(false);
+      });
+
+    return () => {
+      active = false;
+    };
+  }, [persistedContext, loadAttempt]);
+
+  useEffect(() => {
+    if (!persistedContext || !hasUnsavedChanges) return;
+    const warnBeforeUnload = (event: BeforeUnloadEvent) => {
+      event.preventDefault();
+      event.returnValue = '';
+    };
+    window.addEventListener('beforeunload', warnBeforeUnload);
+    return () => window.removeEventListener('beforeunload', warnBeforeUnload);
+  }, [hasUnsavedChanges, persistedContext]);
 
   // Recalcular dinámicamente todo el modelo
   const cronograma = useMemo(
@@ -55,6 +154,7 @@ export function PresupuestoMoModule({
 
   // Manipulación Dinámica de Actividades (Requisito 2)
   const handleSaveActivity = (data: Partial<Actividad>) => {
+    if (isLoadingSaved || persistError) return;
     if (data.id) {
       // Modificar existente
       setActividades((prev) =>
@@ -74,9 +174,12 @@ export function PresupuestoMoModule({
       };
       setActividades((prev) => [...prev, newActividad]);
     }
+    setHasUnsavedChanges(true);
+    setPersistFeedback('');
   };
 
   const handleModifyPersonal = (itemNum: number, cantOficiales: number, cantAyudantes?: number) => {
+    if (isLoadingSaved || persistError) return;
     setActividades((prev) =>
       prev.map((act) => {
         if (act.item !== itemNum) return act;
@@ -90,38 +193,116 @@ export function PresupuestoMoModule({
         };
       })
     );
+    setHasUnsavedChanges(true);
+    setPersistFeedback('');
   };
 
   const handleUpdateRendimientoBase = (itemNum: number, nuevoRendimiento: number) => {
+    if (isLoadingSaved || persistError) return;
     if (nuevoRendimiento <= 0) return;
     setActividades((prev) =>
       prev.map((act) =>
         act.item === itemNum ? { ...act, rendimientoBaseOficial: nuevoRendimiento } : act
       )
     );
+    setHasUnsavedChanges(true);
+    setPersistFeedback('');
   };
 
   const handleDeleteActivity = (itemNum: number) => {
+    if (isLoadingSaved || persistError) return;
     if (window.confirm(`¿Estás seguro de eliminar el Ítem #${itemNum}?`)) {
       setActividades((prev) => prev.filter((act) => act.item !== itemNum));
+      setHasUnsavedChanges(true);
+      setPersistFeedback('');
     }
   };
 
   const handleOpenEdit = (act: Actividad) => {
+    if (isLoadingSaved || persistError) return;
     setActividadEditar(act);
     setIsActivityModalOpen(true);
   };
 
   const handleOpenNew = () => {
+    if (isLoadingSaved || persistError) return;
     setActividadEditar(null);
     setIsActivityModalOpen(true);
   };
 
   const handleResetEbarSur2 = () => {
+    if (isLoadingSaved || persistError) return;
     if (window.confirm('¿Restablecer las 8 actividades base del proyecto "EBAR SUR 2" con optimización de concreto?')) {
       setActividades(ITEMS_EBAR_SUR_2_DEFAULT);
       setConfig(CONFIG_NICARAGUA_2026_DEFAULT);
+      setHasUnsavedChanges(true);
+      setPersistFeedback('');
     }
+  };
+
+  const handleSavePersistedLabor = async () => {
+    if (!persistedContext) return;
+    try {
+      setIsSaving(true);
+      setPersistError('');
+      setPersistFeedback('');
+      const saved = await platformApi.saveLabor(
+        persistedContext.projectId,
+        persistedContext.versionId,
+        {
+          revision_esperada: persistRevision,
+          motivo: persistReason.trim() || 'Guardado desde el módulo de Mano de Obra',
+          actualizado_por_id: persistedContext.actorUserId,
+          configuracion: {
+            salario_minimo_mensual: config.salarioMinimoMensual,
+            dias_mes_comercial: config.diasMesComercial,
+            horas_jornada_diaria: config.horasJornadaDiaria,
+            horas_semana_max: config.horasSemanaMax,
+            dias_semana_laboral: config.diasSemanaLaboral,
+            factor_oficial: config.factorOficial,
+            pct_aguinaldo: config.pctAguinaldo,
+            pct_vacaciones: config.pctVacaciones,
+            pct_inss_patronal: config.pctInssPatronal,
+            pct_inatec: config.pctInatec,
+            pct_indemnizacion: config.pctIndemnizacion,
+            pct_inss_laboral: config.pctInssLaboral,
+          },
+          actividades: actividades.map((activity) => ({
+            id: activity.id,
+            item: activity.item,
+            descripcion: activity.descripcion,
+            unidad_medida: activity.unidadMedida,
+            cantidad: activity.cantidad,
+            rendimiento_base_oficial: activity.rendimientoBaseOficial,
+            cant_oficiales: activity.cantOficiales,
+            cant_ayudantes: activity.cantAyudantes,
+            ratio_ayudantes: activity.ratioAyudantes,
+          })),
+        },
+      );
+      setPersistRevision(saved.revision);
+      setHasUnsavedChanges(false);
+      setPersistReason('');
+      setPersistFeedback(`Mano de Obra guardada en la Versión ${persistedContext.versionNumber}.`);
+    } catch (reason) {
+      setPersistError(reason instanceof Error ? reason.message : 'No se pudo guardar la Mano de Obra.');
+    } finally {
+      setIsSaving(false);
+    }
+  };
+
+  const handleSaveLaborConfig = (nextConfig: ConfiguracionLaboral) => {
+    if (isLoadingSaved || persistError) return;
+    setConfig(nextConfig);
+    setHasUnsavedChanges(true);
+    setPersistFeedback('');
+  };
+
+  const handleResetLaborConfig = () => {
+    if (isLoadingSaved || persistError) return;
+    setConfig(CONFIG_NICARAGUA_2026_DEFAULT);
+    setHasUnsavedChanges(true);
+    setPersistFeedback('');
   };
 
   const handleExportExcel = async () => {
@@ -246,6 +427,48 @@ export function PresupuestoMoModule({
 
       {/* Main Container */}
       <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 flex-1 w-full space-y-6">
+        {persistedContext && mode !== 'apu' && (
+          <section className="flex flex-wrap items-center justify-between gap-4 rounded-xl border border-blue-500/25 bg-blue-950/25 p-4">
+            <div className="min-w-0">
+              <p className="text-sm font-semibold text-blue-100">
+                {persistedContext.projectName} · Versión {persistedContext.versionNumber}
+              </p>
+              <p className="mt-1 text-xs text-slate-400">
+                {isLoadingSaved
+                  ? 'Recuperando Mano de Obra…'
+                  : hasUnsavedChanges
+                    ? 'Hay cambios pendientes de guardar.'
+                    : persistFeedback || 'Cambios persistidos en el proyecto seleccionado.'}
+              </p>
+              {persistError && (
+                <div role="alert" className="mt-1 flex flex-wrap items-center gap-2 text-xs text-rose-300">
+                  <span>{persistError}</span>
+                  <button type="button" onClick={() => setLoadAttempt((attempt) => attempt + 1)} className="underline underline-offset-2">
+                    Reintentar carga
+                  </button>
+                </div>
+              )}
+            </div>
+            <input
+              type="text"
+              maxLength={1000}
+              value={persistReason}
+              onChange={(event) => setPersistReason(event.target.value)}
+              placeholder="Motivo del cambio (opcional)"
+              aria-label="Motivo del cambio de Mano de Obra"
+              className="min-h-10 w-full max-w-sm rounded-lg border border-slate-700 bg-slate-950 px-3 text-sm text-white placeholder:text-slate-500"
+            />
+            <button
+              type="button"
+              onClick={() => void handleSavePersistedLabor()}
+              disabled={isLoadingSaved || isSaving || Boolean(persistError) || !hasUnsavedChanges}
+              className="inline-flex min-h-10 items-center gap-2 rounded-lg bg-emerald-600 px-4 text-sm font-semibold text-white hover:bg-emerald-500 disabled:cursor-not-allowed disabled:opacity-40"
+            >
+              <Save className="h-4 w-4" />
+              {isSaving ? 'Guardando…' : 'Guardar Mano de Obra'}
+            </button>
+          </section>
+        )}
         {mode === 'apu' && <EstructuraCostosView actividades={actividades} cronograma={cronograma} />}
         {mode !== 'apu' && <>
         {mode === 'consolidated' && (
@@ -259,14 +482,16 @@ export function PresupuestoMoModule({
           <div>
             <div className="flex items-center gap-2">
               <span className="text-xs text-slate-400 font-semibold uppercase tracking-wider">Proyecto Activo:</span>
-              <input
-                type="text"
-                value={nombreProyecto}
-                onChange={(e) => setNombreProyecto(e.target.value)}
-                className="bg-slate-800/90 border border-slate-700 rounded px-2.5 py-1 text-sm font-bold text-white focus:outline-none focus:border-blue-500 font-mono"
-              />
+              {persistedContext
+                ? <span className="text-sm font-bold text-white">{nombreProyecto} · Versión {persistedContext.versionNumber}</span>
+                : <input
+                    type="text"
+                    value={nombreProyecto}
+                    onChange={(e) => setNombreProyecto(e.target.value)}
+                    className="bg-slate-800/90 border border-slate-700 rounded px-2.5 py-1 text-sm font-bold text-white focus:outline-none focus:border-blue-500 font-mono"
+                  />}
               <span className="text-xs px-2 py-0.5 rounded bg-blue-500/20 text-blue-300 border border-blue-500/30">
-                8 Partidas Pre-cargadas
+                {persistedContext ? `${actividades.length} Partidas` : '8 Partidas Pre-cargadas'}
               </span>
             </div>
             <p className="text-xs text-slate-400 mt-1">
@@ -339,8 +564,8 @@ export function PresupuestoMoModule({
         isOpen={isConfigModalOpen}
         onClose={() => setIsConfigModalOpen(false)}
         config={config}
-        onSaveConfig={setConfig}
-        onResetDefault={() => setConfig(CONFIG_NICARAGUA_2026_DEFAULT)}
+        onSaveConfig={handleSaveLaborConfig}
+        onResetDefault={handleResetLaborConfig}
       />
 
       {/* Footer */}
