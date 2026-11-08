@@ -23,7 +23,7 @@ interface CatalogoMaestroViewProps {
   onBack: () => void;
 }
 
-const API_BASE_URL = (import.meta.env.VITE_API_BASE_URL || 'http://127.0.0.1:8080').replace(/\/$/, '');
+const API_BASE_URL = (import.meta.env.VITE_API_BASE_URL || 'http://127.0.0.1:8000').replace(/\/$/, '');
 const currencyFormatter = new Intl.NumberFormat('es-NI', {
   style: 'currency',
   currency: 'NIO',

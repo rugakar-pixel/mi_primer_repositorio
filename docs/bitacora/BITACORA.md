@@ -278,3 +278,24 @@ cuando el usuario solicita **“respaldo bitácora”**.
 - En el navegador, el Consolidado mostró 56 renglones iniciales y los seis subtotales. Agregar una actividad elevó Mano de Obra de C$31,824.51 a C$41,499.63 y el total de C$228,336.86 a C$238,011.98; eliminarla restableció ambos totales.
 - El filtro de Materiales mostró 37 renglones y el de Subcontratos indicó que no hay partidas. El filtro funciona sin recargar la página.
 - Las 12 pruebas de backend pasaron: 4 nuevas de consolidación y las 8 pruebas previas. ExcelJS verificó los nombres y el orden de las siete hojas ejecutivas antes de las cuatro hojas laborales existentes; el navegador de prueba no confirmó el evento de descarga, por lo que la descarga/apertura final debe revisarse manualmente.
+
+## Puesta en marcha local del API y PostgreSQL
+
+### 2026-11-08 — Inicio automático del backend
+
+- **Base de datos:** el usuario confirmó que creó la base PostgreSQL local `constructions_system_db`, configuró `backend/.env` y aplicó correctamente las siete migraciones de `backend/migrations/`.
+- **Entorno Python:** se detectó el entorno virtual `.venv` en la raíz del repositorio.
+- **Comando recomendado desde la raíz del repositorio:**
+
+  ```powershell
+  .\.venv\Scripts\python.exe -m pip install -r .\backend\requirements.txt python-dotenv
+  Set-Location .\backend
+  $env:PYTHONPATH = (Get-Location).Path
+  ..\.venv\Scripts\python.exe -m uvicorn app.main:app --reload
+  ```
+
+- **Activación de PowerShell:** `Activate.ps1` fue bloqueado por la política de ejecución del sistema. Para evitar cambiar una política global, se utilizó directamente `..\.venv\Scripts\python.exe -m uvicorn`, que ejecuta Uvicorn dentro del entorno virtual.
+- **Servidor:** Uvicorn quedó ejecutándose con recarga automática en `http://127.0.0.1:8000`, observando la carpeta `backend`.
+- **Verificación interna:** `GET http://127.0.0.1:8000/` devolvió `status: ok` y el mensaje `Backend Presupuestista Activo`.
+- **Verificación OpenAPI:** `GET http://127.0.0.1:8000/openapi.json` devolvió HTTP 200 con una respuesta de 85,664 bytes.
+- **Flujo completo para futuras sesiones:** iniciar PostgreSQL; confirmar `backend/.env`; activar o invocar el intérprete de `.venv`; situarse en `backend`; establecer `PYTHONPATH` al directorio actual; iniciar `uvicorn app.main:app --reload`; comprobar `/` y `/openapi.json`; abrir el frontend en `http://127.0.0.1:3000` cuando Vite también esté ejecutándose.
